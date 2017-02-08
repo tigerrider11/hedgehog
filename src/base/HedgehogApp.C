@@ -1,0 +1,50 @@
+#include "HedgehogApp.h"
+#include "Moose.h"
+#include "AppFactory.h"
+#include "ModulesApp.h"
+#include "MooseSyntax.h"
+
+template<>
+InputParameters validParams<HedgehogApp>()
+{
+  InputParameters params = validParams<MooseApp>();
+  return params;
+}
+
+HedgehogApp::HedgehogApp(InputParameters parameters) :
+    MooseApp(parameters)
+{
+  Moose::registerObjects(_factory);
+  ModulesApp::registerObjects(_factory);
+  HedgehogApp::registerObjects(_factory);
+
+  Moose::associateSyntax(_syntax, _action_factory);
+  ModulesApp::associateSyntax(_syntax, _action_factory);
+  HedgehogApp::associateSyntax(_syntax, _action_factory);
+}
+
+HedgehogApp::~HedgehogApp()
+{
+}
+
+// External entry point for dynamic application loading
+extern "C" void HedgehogApp__registerApps() { HedgehogApp::registerApps(); }
+void
+HedgehogApp::registerApps()
+{
+  registerApp(HedgehogApp);
+}
+
+// External entry point for dynamic object registration
+extern "C" void HedgehogApp__registerObjects(Factory & factory) { HedgehogApp::registerObjects(factory); }
+void
+HedgehogApp::registerObjects(Factory & factory)
+{
+}
+
+// External entry point for dynamic syntax association
+extern "C" void HedgehogApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { HedgehogApp::associateSyntax(syntax, action_factory); }
+void
+HedgehogApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
+{
+}
